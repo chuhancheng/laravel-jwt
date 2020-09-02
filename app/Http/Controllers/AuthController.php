@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
 use App\User;
+use JWTAuth;
 
 class AuthController extends Controller
 {
@@ -33,8 +34,14 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
+        $user = auth('api')->user();
+        $payloadable = [
+            'name' => $user->name,
+            'email' => $user->email
+        ];
+        $token = JWTAuth::claims($payloadable)->attempt($credentials);
         return response()->json([
-            'user' => auth('api')->user(),
+            'user' => $payloadable,
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth('api')->factory()->getTTL() * 60
@@ -98,7 +105,7 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh());
+        return $this->respondWithToken(auth('api')->refresh());
     }
 
     /**
