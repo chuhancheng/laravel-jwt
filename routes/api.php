@@ -29,3 +29,15 @@ Route::group([
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
 });
+
+Route::get('/testLoginData', function () {
+    return [
+        'users' => [1,2,3,4,5,6,7]
+    ];
+});
+
+Route::get('/testLoginData2', function () {
+    return [
+        'users' => [6,5,4,3,2,1]
+    ];
+});
